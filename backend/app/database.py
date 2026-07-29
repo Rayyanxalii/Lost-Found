@@ -1,0 +1,32 @@
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, declarative_base
+from dotenv import load_dotenv
+import os
+
+
+load_dotenv()
+Base = declarative_base()
+
+DATABASE_URL = os.getenv('DATABASE_URL')
+
+
+engine = create_engine(DATABASE_URL)
+
+
+SessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=engine
+)
+
+
+# bar session bana hoga then bar bar session close krna hoga in 100s of endpoint so isliye we create this funtion
+def get_db():
+    db = SessionLocal()
+
+    try:
+        yield db
+
+    finally:
+        db.close()
+
