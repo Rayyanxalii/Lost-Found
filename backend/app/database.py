@@ -1,17 +1,15 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 from dotenv import load_dotenv
+from pathlib import Path
 import os
 
+env_path = Path(__file__).resolve().parents[2] / ".env"
+load_dotenv(env_path)
 
-load_dotenv()
-Base = declarative_base()
-
-DATABASE_URL = os.getenv('DATABASE_URL')
-
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 engine = create_engine(DATABASE_URL)
-
 
 SessionLocal = sessionmaker(
     autocommit=False,
@@ -19,8 +17,9 @@ SessionLocal = sessionmaker(
     bind=engine
 )
 
+Base = declarative_base()
 
-# bar session bana hoga then bar bar session close krna hoga in 100s of endpoint so isliye we create this funtion
+
 def get_db():
     db = SessionLocal()
 
@@ -29,4 +28,3 @@ def get_db():
 
     finally:
         db.close()
-

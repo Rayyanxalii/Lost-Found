@@ -5,7 +5,6 @@ from sqlalchemy.orm import declarative_base
 Base = declarative_base()
 
 
-
 class User(Base):
     __tablename__ = "users"
 
@@ -15,9 +14,10 @@ class User(Base):
 
     email = Column(String, unique=True, nullable=False)
 
-    hashed_password = Column(String, nullable=False)
+    hashed_pass = Column(String, nullable=False)
 
     created_at = Column(DateTime, default=datetime.utcnow)
+    
     
     
 class Item(Base):
