@@ -9,3 +9,10 @@ class usercreate(BaseModel):
 class UserLogin(BaseModel):
     email: EmailStr = Field(...)
     password: str = Field(..., min_length = 8)
+    
+
+class ItemCreate(BaseModel):
+    title: str
+    description: str
+    category: str
+    location: str

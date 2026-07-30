@@ -1,9 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from database import get_db
-from models import User
-from schemas import usercreate, UserLogin
-from security import hash_password, verify_password
+from models import User, Item
+from schemas import usercreate, UserLogin, ItemCreate
+from security import hash_password, verify_password, create_access_token, verify_access_token
+from dependencies import get_current_user
+
 
 
 router = APIRouter(
@@ -76,7 +78,40 @@ def login(
             status_code=401,
             detail="Invalid credentials"
         )
+        
 
-    return {
-        "message": "Login successful"
+    access_token = create_access_token(
+    {
+        "sub": str(existing_user.id)
     }
+)
+    return {
+        "access_token": access_token,
+        "token_type": "bearer"
+    }
+    
+
+
+@router.post("/items")
+def create_item(
+    item: ItemCreate,
+    current_user = Depends(get_current_user),
+    db : Session = Depends(get_db)
+    ):
+    
+    new_item = Item(
+    title=item.title,
+    description=item.description,
+    category=item.category,
+    location=item.location,
+    user_id=current_user.id
+)
+    
+    db.add(new_item)
+    db.commit()
+    db.refresh(new_item)
+    
+    return {
+    "message": "Item created successfully",
+    "item_id": new_item.id
+}   
